@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Dimensions, LayoutChangeEvent, StyleProp, StyleSheet, Text, TextStyle, TouchableHighlight, TouchableWithoutFeedback, View, ViewStyle } from 'react-native';
+import { Dimensions, LayoutChangeEvent, StyleProp, StyleSheet, Text, TextStyle, TouchableHighlight, TouchableWithoutFeedback, View, ViewStyle, KeyboardAvoidingView, Platform } from 'react-native';
 import { WithTheme, WithThemeStyles } from '../style';
 import { getComponentLocale } from '../_util/getLocale';
 import alert from './alert';
@@ -8,7 +8,7 @@ import zh_CN from './locale/zh_CN';
 import RCModal from './ModalView';
 import operation from './operation';
 import prompt from './prompt';
-import { ModalPropsType } from './PropsType';
+import { CallbackOnBackHandler, ModalPropsType } from './PropsType';
 import modalStyles, { ModalStyle } from './style/index';
 
 const maxHeight = StyleSheet.create({
@@ -22,6 +22,7 @@ export interface ModalProps
   WithThemeStyles<ModalStyle> {
   style?: StyleProp<ViewStyle>;
   bodyStyle?: StyleProp<ViewStyle>;
+  onRequestClose?: CallbackOnBackHandler;
 }
 
 class AntmModal extends React.Component<ModalProps, any> {
@@ -76,6 +77,7 @@ class AntmModal extends React.Component<ModalProps, any> {
       onClose,
       bodyStyle,
       onAnimationEnd,
+      onRequestClose,
     } = this.props;
 
     // tslint:disable-next-line:variable-name
@@ -176,20 +178,23 @@ class AntmModal extends React.Component<ModalProps, any> {
                   onClose={onClose}
                   animationType={animType}
                   wrapStyle={transparent ? styles.wrap : undefined}
-                  style={[styles.innerContainer, style]}
+                  style={styles.wrap}
                   visible={visible}
                   onAnimationEnd={onAnimationEnd}
+                  onRequestClose={onRequestClose}
                   animateAppear={animateAppear}
                   maskClosable={maskClosable}
                 >
-                  <View style={maxHeight} ref={this.saveRoot}>
-                    {title ? (
-                      <Text style={[styles.header]}>{title}</Text>
-                    ) : null}
-                    <View style={[styles.body, bodyStyle]}>{children}</View>
-                    {footerDom}
-                    {closableDom}
-                  </View>
+                  <KeyboardAvoidingView behavior="padding" enabled={Platform.OS==="ios"}>
+                    <View style={[styles.innerContainer,style]} ref={this.saveRoot}>
+                      {title ? (
+                        <Text style={[styles.header]}>{title}</Text>
+                      ) : null}
+                      <View style={[styles.body, bodyStyle]}>{children}</View>
+                      {footerDom}
+                      {closableDom}
+                    </View>
+                  </KeyboardAvoidingView>
                 </RCModal>
               </View>
             );
@@ -215,6 +220,7 @@ class AntmModal extends React.Component<ModalProps, any> {
                   ]}
                   visible={visible}
                   onAnimationEnd={onAnimationEnd}
+                  onRequestClose={onRequestClose}
                   animateAppear={animateAppear}
                   maskClosable={maskClosable}
                 >
@@ -233,6 +239,7 @@ class AntmModal extends React.Component<ModalProps, any> {
               <RCModal
                 visible={visible}
                 animationType={animType}
+                onRequestClose={onRequestClose}
                 onClose={onClose}
               >
                 <View style={style}>{children}</View>

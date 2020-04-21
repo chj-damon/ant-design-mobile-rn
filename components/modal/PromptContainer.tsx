@@ -1,7 +1,7 @@
 
 import PropTypes from 'prop-types';
 import React from 'react';
-import { BackHandler, KeyboardAvoidingView, Text, TextInput, TextStyle, View } from 'react-native';
+import { Text, TextInput, TextStyle, View } from 'react-native';
 import { WithTheme, WithThemeStyles } from '../style';
 import { getComponentLocale } from '../_util/getLocale';
 import zh_CN from './locale/zh_CN';
@@ -40,14 +40,6 @@ export default class PropmptContainer extends React.Component<
       text: props.defaultValue,
       password: props.type === 'secure-text' ? props.defaultValue : '',
     };
-  }
-
-  componentDidMount() {
-    BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
-  }
-
-  componentWillUnmount() {
-    BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
   }
 
   onBackAndroid = () => {
@@ -165,8 +157,8 @@ export default class PropmptContainer extends React.Component<
               visible={this.state.visible}
               footer={footer}
               onAnimationEnd={onAnimationEnd}
+              onRequestClose={this.onBackAndroid}
             >
-              <KeyboardAvoidingView behavior="padding">
                 {message ? <Text style={styles.message}>{message}</Text> : null}
                 <View style={styles.inputGroup}>
                   {type !== 'secure-text' && (
@@ -199,7 +191,6 @@ export default class PropmptContainer extends React.Component<
                     </View>
                   )}
                 </View>
-              </KeyboardAvoidingView>
             </Modal>
           );
         }}

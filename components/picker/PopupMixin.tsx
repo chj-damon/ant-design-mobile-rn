@@ -2,11 +2,18 @@ import React from 'react';
 import { View } from 'react-native';
 import { PopupPickerProps } from './PopupPickerTypes';
 
+interface Args {
+  getContent: any,
+  hide: any,
+  onDismiss: any,
+  onOk: any
+}
+
 export default function PopupMixin(
   getModal: (
     props: any,
     visible: any,
-    { getContent, hide, onDismiss, onOk }: any,
+    args: Args,
   ) => JSX.Element,
   platformProps: {
     actionTextUnderlayColor: string;
@@ -38,7 +45,7 @@ export default function PopupMixin(
       };
     }
 
-    componentWillReceiveProps(nextProps: { value: any; visible: any }) {
+    UNSAFE_componentWillReceiveProps(nextProps: { value: any; visible: any }) {
       if ('value' in nextProps) {
         this.setState({
           pickerValue: nextProps.value,
