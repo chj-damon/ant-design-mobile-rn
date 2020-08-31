@@ -1,5 +1,11 @@
 import React, { isValidElement } from 'react';
-import { ScrollView, StyleProp, TouchableOpacity, View, ViewStyle } from 'react-native';
+import {
+  ScrollView,
+  StyleProp,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { Popover as Pop, PopoverController } from 'react-native-modal-popover';
 import { Placement } from 'react-native-modal-popover/lib/PopoverGeometry';
 import { WithTheme, WithThemeStyles } from '../style';
@@ -10,8 +16,15 @@ export interface PopoverProps extends WithThemeStyles<PopoverStyle> {
   onSelect?: (node: any, index?: number) => void;
   overlay: React.ReactNode;
   disabled?: boolean;
-  renderOverlayComponent?: (node: React.ReactNode) => React.ReactNode;
+  renderOverlayComponent?: (
+    node: React.ReactNode,
+    closePopover: () => void,
+  ) => React.ReactNode;
   placement?: Placement | 'auto';
+  duration?: number;
+  easing?: (show: boolean) => (value: number) => number;
+  useNativeDriver?: boolean;
+  onDismiss?: () => void;
 }
 export interface PopoverItemProps {
   value: any;
@@ -72,12 +85,22 @@ export default class Popover extends React.PureComponent<PopoverProps, any> {
       } as any);
     });
     if (typeof renderOverlayComponent === 'function') {
-      return renderOverlayComponent(items);
+      return renderOverlayComponent(items, closePopover);
     }
     return <ScrollView>{items}</ScrollView>;
   };
   render() {
-    const { children, disabled, triggerStyle, styles, placement } = this.props;
+    const {
+      children,
+      disabled,
+      triggerStyle,
+      styles,
+      placement,
+      duration,
+      easing,
+      useNativeDriver,
+      onDismiss,
+    } = this.props;
 
     return (
       <WithTheme themeStyles={PopoverStyles} styles={styles}>
@@ -109,6 +132,10 @@ export default class Popover extends React.PureComponent<PopoverProps, any> {
                   fromRect={popoverAnchorRect}
                   supportedOrientations={['portrait', 'landscape']}
                   placement={placement}
+                  duration={duration}
+                  easing={easing}
+                  useNativeDriver={useNativeDriver}
+                  onDismiss={onDismiss}
                 >
                   {this.renderOverlay(closePopover)}
                 </Pop>

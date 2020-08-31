@@ -1,10 +1,10 @@
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { AppRegistry } from 'react-native';
-import { createStackNavigator } from 'react-navigation';
+import 'react-native-gesture-handler';
 import Provider from '../components/provider';
-// import Home from './components/Home';
-import RnIndex from './components/RnIndex';
-import WebIndex from './components/WebIndex';
+import RnIndex from './components/index';
 import { OTHERS, UIBARS, UICONTROLS, UIVIEWS } from './demoList';
 
 const getOptions = title => ({
@@ -16,17 +16,9 @@ const getOptions = title => ({
 });
 
 const scenes = {
-  // Home: {
-  //   screen: Home,
-  //   navigationOptions: getOptions('Ant Design Mobile'),
-  // },
   native: {
     screen: RnIndex,
-    navigationOptions: getOptions('Antm React Native'),
-  },
-  web: {
-    screen: WebIndex,
-    navigationOptions: getOptions('Antm Web Component'),
+    navigationOptions: getOptions('Ant Design'),
   },
 };
 
@@ -38,24 +30,48 @@ const scenes = {
   };
 });
 
-const RootNavigator = createStackNavigator(scenes);
+const Stack = createStackNavigator();
+
 class App extends React.Component {
   state = {
     theme: null,
     currentTheme: null,
-  }
+  };
   changeTheme = (theme, currentTheme) => {
     this.setState({ theme, currentTheme });
-  }
+  };
   render() {
     const { theme, currentTheme } = this.state;
-    return (<Provider theme={theme}>
-      <RootNavigator screenProps={{ changeTheme: this.changeTheme, currentTheme }} />
-    </Provider>);
+    return (
+      <Provider theme={theme}>
+        <NavigationContainer
+          screenProps={{ changeTheme: this.changeTheme, currentTheme }}
+          initialRouteName="Home"
+        >
+          <Stack.Navigator>
+            {Object.keys(scenes).map(key => (
+              <Stack.Screen
+                name={key}
+                key={key}
+                component={scenes[key].screen}
+                options={scenes[key].navigationOptions}
+              />
+            ))}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
+    );
   }
 }
 
-
-AppRegistry.registerComponent('kitchen-sink', () => App);
+AppRegistry.registerComponent('KitchenSink', () => App);
 
 export default App;
+
+// global catch error to avoid crash
+global.ErrorUtils.setGlobalHandler((e, isFatal) => {
+  if (isFatal) {
+    // eslint-disable-next-line no-alert
+    alert(`${e.name}: ${e.message}`);
+  }
+});

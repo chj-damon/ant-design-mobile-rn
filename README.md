@@ -18,18 +18,6 @@ English | [简体中文](./README.zh-CN.md)
 
 A configurable Mobile UI specification and React-based implementation.
 
-## Announcement
-
-~~Thank you all for trusting us and using antd-mobile-rn. Due to limited application secnarios and development resouces, we regret to annouce antd-mobile-rn will not be officially mainained and updated. If anyone in the community is interested to continue to maintain this project, please contact us in private.~~
-
-If you found a bug you can file an issue directly and `PR` are always welcome.
-
-By the way. you can support this project via Star star sta st s... ⭐️ ⭐️ ⭐️ ⭐️ ⭐️.
-
-~~Discussion: [The new plan](https://github.com/ant-design/ant-design-mobile-rn/issues/119)~~
-
-The new version `3.x` has been released, please see the installation upgrade guide.[Changelog](https://rn.mobile.ant.design/changelog)
-
 ## Features
 
 - Follow Ant Design Mobile UI specification.
@@ -39,9 +27,21 @@ The new version `3.x` has been released, please see the installation upgrade gui
 
 ## Demo
 
-<img width="250" src="https://user-images.githubusercontent.com/433259/50051494-1c934080-014e-11e9-82b2-b18c6b727443.png" />
+```bash
+# clone
+git clone git@github.com:ant-design/ant-design-mobile-rn.git
 
-install expo app: https://expo.io/tools
+# go to ant rn folder
+cd ant-design-mobile-rn
+
+# install dependencies
+yarn
+
+# start ios simulator or android
+# cd rn-kitchen-sink/ios && pod install
+yarn ios # or yarn android
+
+```
 
 ## Install & Usage
 
@@ -55,10 +55,24 @@ or
 yarn add @ant-design/react-native
 ```
 
+### Installing peer dependencies (4.0.0+)
+
+```bash
+npm install @react-native-community/cameraroll @react-native-community/picker @react-native-community/segmented-control @react-native-community/slider @react-native-community/viewpager
+```
+
+or
+
+```bash
+yarn add @react-native-community/cameraroll @react-native-community/picker @react-native-community/segmented-control @react-native-community/slider @react-native-community/viewpager
+```
+
+> You need go to ios folder and run `pod install` (auto linking)，Android will handle it by itself.
+
 ### Link icon fonts
 
 ```bash
-react-native link @ant-design/react-native
+npx react-native link
 ```
 
 [introduce](docs/react/introduce.en-US.md#安装)

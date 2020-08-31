@@ -18,17 +18,6 @@
 
 Ant Design 移动端设计规范。`@ant-design/react-native` 是 Ant Design 的移动规范的 React 实现，服务于蚂蚁及口碑无线业务。
 
-## 通知
-
-~~首先，很感谢信任我们，使用`antd-mobile-rn`。但由于 RN 目前应用场景比较少以及精力所限，`antd-mobile-rn`仓库不再更新、维护。
-如果社区中有人有意愿维护，可以私信我们。~~
-
-在提交`issues`的时候请描述清楚，如果已经知道问题所在也可以直接提`PR`，添加相应测试如果测试通过会尽快发布一个新版本。
-
-~~欢迎讨论: [新版计划](https://github.com/ant-design/ant-design-mobile-rn/issues/119)~~
-
-新版本`3.x`已经重构完成并发布，安装升级请查看 [更新日志](https://rn.mobile.ant.design/changelog-cn)
-
 ## 特性
 
 - 基于 Ant Design 移动设计规范。
@@ -38,9 +27,21 @@ Ant Design 移动端设计规范。`@ant-design/react-native` 是 Ant Design 的
 
 ## 演示
 
-<img width="250" src="https://user-images.githubusercontent.com/1698185/27175806-f0a8a7f0-51f2-11e7-85fb-4b7ea9f89e5b.png" />
+```bash
+# clone
+git clone git@github.com:ant-design/ant-design-mobile-rn.git
 
-请先安装 expo app： https://expo.io/tools
+# go to ant rn folder
+cd ant-design-mobile-rn
+
+# install dependencies
+yarn
+
+# start ios simulator or android
+# cd rn-kitchen-sink/ios && pod install
+yarn ios # or yarn android
+
+```
 
 ## 安装 & 使用
 
@@ -54,10 +55,25 @@ or
 yarn add @ant-design/react-native
 ```
 
-### 链接字体图标
+### 安装peer依赖(4.0.0+)
 
 ```bash
-react-native link @ant-design/icons-react-native
+npm install @react-native-community/cameraroll @react-native-community/picker @react-native-community/segmented-control @react-native-community/slider @react-native-community/viewpager
+```
+
+or
+
+```bash
+yarn add @react-native-community/cameraroll @react-native-community/picker @react-native-community/segmented-control @react-native-community/slider @react-native-community/viewpager
+```
+
+> 安装完依赖后需要到 iOS 目录 `pod install`(auto linking)，Android 不需要手动处理
+
+### 链接字体图标以及自动链接
+
+```bash
+# 手动链接字体图标
+npx react-native link
 ```
 
 [介绍](docs/react/introduce.zh-CN.md#安装)

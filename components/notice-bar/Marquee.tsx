@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Animated,
-  Easing,
-  LayoutChangeEvent,
-  StyleProp,
-  Text,
-  TextStyle,
-  View,
-} from 'react-native';
+import { Animated, Easing, LayoutChangeEvent, StyleProp, Text, TextStyle, View } from 'react-native';
 
 export interface MarqueeProps {
   text?: React.ReactNode;
@@ -31,42 +23,49 @@ class Marquee extends React.PureComponent<MarqueeProps, any> {
   };
 
   texts: any;
-  twidth = 0;
-  width = 0;
+  left: any;
 
   constructor(props: MarqueeProps) {
     super(props);
 
     this.texts = {};
+    this.left = new Animated.Value(0);
     this.state = {
-      left: new Animated.Value(0),
+      twidth : 0,
+      width : 0,
     };
   }
 
   onLayout = (e: LayoutChangeEvent) => {
-    if (this.twidth) {
+    if (this.state.twidth) {
       return;
     }
 
-    this.twidth = e.nativeEvent.layout.width;
-    // onLayout may be earlier than onLayoutContainer on android, can not be sure width < twidth at that time.
-    this.tryStart();
+    this.setState(
+      {
+        twidth: e.nativeEvent.layout.width,
+      },
+      () => {
+        // onLayout may be earlier than onLayoutContainer on android, can not be sure width < twidth at that time.
+        this.tryStart();
+      },
+    );
   }
 
   tryStart() {
-    if (this.twidth > this.width && this.width) {
+    if (this.state.twidth > this.state.width && this.state.width) {
       this.startMove();
     }
   }
 
   onLayoutContainer = (e: LayoutChangeEvent) => {
-    if (!this.width) {
-      this.width = e.nativeEvent.layout.width;
+    if (!this.state.width) {
       this.setState(
         {
-          left: new Animated.Value(0),
+          width: e.nativeEvent.layout.width,
         },
         () => {
+          this.left.setValue(0);
           this.tryStart();
         },
       );
@@ -77,13 +76,14 @@ class Marquee extends React.PureComponent<MarqueeProps, any> {
     const { fps = 40, loop } = this.props;
     const SPPED = 1 / fps * 1000;
     // tslint:disable-next-line:no-this-assignment
-    const { width, twidth, props } = this;
-    Animated.timing(this.state.left, {
-      toValue: -twidth + width,
-      duration: twidth * SPPED,
+    const { props } = this;
+    Animated.timing(this.left, {
+      toValue: 1,
+      duration: this.state.twidth * SPPED,
       easing: Easing.linear,
       delay: props.leading,
       isInteraction: false,
+      useNativeDriver: true,
     }).start(() => {
       if (loop) {
         this.moveToHeader();
@@ -92,17 +92,19 @@ class Marquee extends React.PureComponent<MarqueeProps, any> {
   }
 
   moveToHeader = () => {
-    Animated.timing(this.state.left, {
+    Animated.timing(this.left, {
       toValue: 0,
       duration: 0,
       delay: this.props.trailing,
       isInteraction: false,
+      useNativeDriver: true,
     }).start(() => {
       this.startMove();
     });
   }
 
   render() {
+    const { width, twidth } = this.state;
     const { style, text, maxWidth } = this.props;
 
     const textChildren = (
@@ -125,7 +127,14 @@ class Marquee extends React.PureComponent<MarqueeProps, any> {
           // tslint:disable-next-line:jsx-no-multiline-js
           style={{
             flexDirection: 'row',
-            left: this.state.left,
+            transform: [
+              {
+                translateX: this.left.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [0,-twidth + width],
+                }),
+              },
+            ],
             width: maxWidth,
           }}
         >
